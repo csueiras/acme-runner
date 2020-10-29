@@ -1,0 +1,13 @@
+spring:
+  main:
+    banner-mode: off
+acme:
+  enabled: true
+  accept-terms-of-service: true
+  domain-chain-file: certificates/domain-chain.crt
+  user-key-file: certificates/user.key
+  domain-key-file: certificates/domain.key
+  domain-csr-file: certificates/domain.csr
+  key-store-file: certificates/keystore.p12
+server:
+  port: 8080
