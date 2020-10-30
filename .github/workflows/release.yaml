@@ -46,4 +46,4 @@ jobs:
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-        run: ./mvnw clean release:perform -B -Prelease -Ddocker.username=$DOCKER_HUB_USERNAME -Ddocker.password=$DOCKER_HUB_PASSWORD
+        run: ./mvnw clean release:perform -B -Ddocker.username=$DOCKER_HUB_USERNAME -Ddocker.password=$DOCKER_HUB_PASSWORD
