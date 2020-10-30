@@ -21,8 +21,6 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <version.plugins.docker-maven-plugin>0.33.0</version.plugins.docker-maven-plugin>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
-
-        <docker.registry>docker.io</docker.registry>
     </properties>
 
     <licenses>
@@ -82,8 +80,6 @@
                         <autoPull>on</autoPull>
                         <verbose>true</verbose>
                         <removeVolumes>true</removeVolumes>
-                        <pushRegistry>${docker.registry}</pushRegistry>
-                        <pullRegistry>docker.io</pullRegistry>
                     </configuration>
                 </plugin>
                 <plugin>
