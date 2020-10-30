@@ -24,7 +24,7 @@
         <version.plugins.docker-maven-plugin>0.33.0</version.plugins.docker-maven-plugin>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
 
-        <docker.registry>docker.io/csueiras</docker.registry>
+        <docker.registry>docker.io</docker.registry>
     </properties>
 
     <licenses>
@@ -153,7 +153,7 @@
                         <configuration>
                             <images combine.children="append">
                                 <image>
-                                    <name>${docker.registry}/${project.artifactId}:${project.version}</name>
+                                    <name>csueiras/${project.artifactId}:${project.version}</name>
                                     <alias>${project.artifactId}</alias>
                                     <build>
                                         <args>
