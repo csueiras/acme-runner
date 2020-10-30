@@ -21,10 +21,10 @@
 
         <spring-boot-starter-acme.version>0.1.0</spring-boot-starter-acme.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-        <version.plugins.docker-maven-plugin>0.27.2</version.plugins.docker-maven-plugin>
+        <version.plugins.docker-maven-plugin>0.33.0</version.plugins.docker-maven-plugin>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
 
-        <docker.registry>docker.io</docker.registry>
+        <docker.registry>docker.io/csueiras</docker.registry>
     </properties>
 
     <licenses>
@@ -60,11 +60,20 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
-                        <releaseProfiles>release</releaseProfiles>
+                        <releaseProfiles>release-deployment</releaseProfiles>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -121,38 +130,12 @@
 
     <profiles>
         <profile>
-            <id>release</id>
-            <properties>
-                <docker.floating.tag>latest</docker.floating.tag>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default</id>
-                                <goals>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>docker-build</id>
+            <id>dockerfile-build</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!-- equivalent to activeByDefault=true -->
+                <file>
+                    <exists>.</exists>
+                </file>
             </activation>
             <properties>
                 <docker.build.skipRun>true</docker.build.skipRun>
@@ -170,7 +153,7 @@
                         <configuration>
                             <images combine.children="append">
                                 <image>
-                                    <name>csueiras/acme-runner:${project.version}</name>
+                                    <name>${docker.registry}/${project.artifactId}:${project.version}</name>
                                     <alias>${project.artifactId}</alias>
                                     <build>
                                         <args>
@@ -202,6 +185,40 @@
                         </executions>
                     </plugin>
                 </plugins>
+            </build>
+        </profile>
+
+        <!-- release-deployment -->
+        <profile>
+            <id>release-deployment</id>
+            <activation>
+                <file>
+                    <exists>.</exists>
+                </file>
+            </activation>
+
+            <properties>
+                <docker.floating.tag>latest</docker.floating.tag>
+            </properties>
+
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>io.fabric8</groupId>
+                            <artifactId>docker-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>docker-deploy</id>
+                                    <phase>deploy</phase>
+                                    <goals>
+                                        <goal>push</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
             </build>
         </profile>
     </profiles>
